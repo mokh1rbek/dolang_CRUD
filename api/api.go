@@ -1,26 +1,30 @@
 package api
 
 import (
-	"database/sql"
+	_ "github.com/mokh1rbek/CRUD/api/docs"
+	"github.com/mokh1rbek/CRUD/api/handler"
+	"github.com/mokh1rbek/CRUD/storage"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-
-	_ "github.com/mokh1rbek/golang_CRUD/api/docs"
-	"github.com/mokh1rbek/golang_CRUD/api/handler"
 )
 
-func SetUpApi(r *gin.Engine, db *sql.DB) {
+func SetUpApi(r *gin.Engine, storage storage.StorageI) {
 
-	handlerV1 := handler.NewHandlerV1(db)
+	handlerV1 := handler.NewHandlerV1(storage)
 
-	r.POST("/user", handlerV1.Create)
-	r.GET("/user/:id", handlerV1.GetById)
-	r.GET("/user", handlerV1.GetList)
-	r.PUT("/user", handlerV1.Update)
-	r.PATCH("/user", handlerV1.Patch)
-	r.DELETE("/user/:id", handlerV1.Delete)
+	r.POST("/film", handlerV1.CreateFilm)
+	r.GET("/film/:id", handlerV1.GetFilmById)
+	r.GET("/film", handlerV1.GetFilmList)
+	r.PUT("/film/:id", handlerV1.UpdateFilm)
+	r.DELETE("/film/:id", handlerV1.DeleteFilm)
+
+	r.POST("/category", handlerV1.CreateCategory)
+	r.GET("/category/:id", handlerV1.GetCategoryById)
+	r.GET("/category", handlerV1.GetCategoryList)
+	r.PUT("/category/:id", handlerV1.UpdateCategory)
+	r.DELETE("/category/:id", handlerV1.DeleteCategory)
 
 	url := ginSwagger.URL("swagger/doc.json") // The url pointing to API definition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))

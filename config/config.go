@@ -3,11 +3,12 @@ package config
 type Config struct {
 	HTTPPort string
 
-	PostgresHost     string
-	PostgresUser     string
-	PostgresDatabase string
-	PostgresPassword string
-	PostgresPort     string
+	PostgresHost           string
+	PostgresUser           string
+	PostgresDatabase       string
+	PostgresPassword       string
+	PostgresPort           string
+	PostgresMaxConnections int32
 }
 
 func Load() Config {
@@ -18,9 +19,10 @@ func Load() Config {
 
 	cfg.PostgresHost = "localhost"
 	cfg.PostgresUser = "mohirbek"
-	cfg.PostgresDatabase = "classdb"
+	cfg.PostgresDatabase = "slassdb"
 	cfg.PostgresPassword = "bismillah"
 	cfg.PostgresPort = "5432"
+	cfg.PostgresMaxConnections = 20
 
 	return cfg
 }

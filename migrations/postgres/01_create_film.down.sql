@@ -1,0 +1,4 @@
+
+DROP TABLE IF EXISTS film;
+
+DROP TABLE IF EXISTS category;

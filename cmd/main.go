@@ -1,29 +1,30 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/gin-gonic/gin"
-
-	// "github.com/mokh1rbek/golang_CRUD/api"
-	"github.com/mokh1rbek/golang_CRUD/config"
-	"github.com/mokh1rbek/golang_CRUD/pkg/db"
+	"github.com/mokh1rbek/CRUD/api"
+	"github.com/mokh1rbek/CRUD/config"
+	"github.com/mokh1rbek/CRUD/storage/postgres"
 )
 
 func main() {
 
 	cfg := config.Load()
 
-	db, err := db.ConnectionDB(&cfg)
-	if err != nil {
-		panic(err)
-	}
-
-	defer db.Close()
-
 	r := gin.New()
 
-	// api.SetUpApi(r, db)
+	r.Use(gin.Logger(), gin.Recovery())
+
+	storage, err := postgres.NewPostgres(context.Background(), cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer storage.CloseDB()
+
+	api.SetUpApi(r, storage)
 
 	log.Printf("Listening port %v...\n", cfg.HTTPPort)
 	err = r.Run(cfg.HTTPPort)
