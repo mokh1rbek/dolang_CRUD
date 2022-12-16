@@ -5,8 +5,9 @@ import (
 
 	"database/sql"
 
-	"github.com/mokh1rbek/golang_CRUD/config"
 	_ "github.com/lib/pq"
+
+	"github.com/mokh1rbek/golang_CRUD/config"
 )
 
 func ConnectionDB(cfg *config.Config) (*sql.DB, error) {

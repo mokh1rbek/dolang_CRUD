@@ -4,9 +4,10 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mokh1rbek/golang_CRUD/api"
+
+	// "github.com/mokh1rbek/golang_CRUD/api"
 	"github.com/mokh1rbek/golang_CRUD/config"
-	"github.com/mokh1rbek/golang_CRUD/pkg/db" 
+	"github.com/mokh1rbek/golang_CRUD/pkg/db"
 )
 
 func main() {
@@ -22,7 +23,7 @@ func main() {
 
 	r := gin.New()
 
-	api.SetUpApi(r, db)
+	// api.SetUpApi(r, db)
 
 	log.Printf("Listening port %v...\n", cfg.HTTPPort)
 	err = r.Run(cfg.HTTPPort)

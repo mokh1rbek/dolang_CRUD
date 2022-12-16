@@ -5,135 +5,119 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
+
 	"github.com/mokh1rbek/golang_CRUD/models"
 	"github.com/mokh1rbek/golang_CRUD/storage"
 )
 
-// CreateFilm godoc
-// @ID create_film
-// @Router /film [POST]
-// @Summary Create Film
-// @Description Create Film
-// @Tags Film
+// CreateUser godoc
+// @ID create_user
+// @Router /user [POST]
+// @Summary Create User
+// @Description Create User
+// @Tags User
 // @Accept json
 // @Produce json
-// @Param film body models.Film true "CreateFilmRequestBody"
-// @Success 201 {object} models.Film "GetFilmBody"
+// @Param user body models.User true "CreateUserRequestBody"
+// @Success 201 {object} models.User "GetUserBody"
 // @Response 400 {object} string "Invalid Argument"
 // @Failure 500 {object} string "Server Error"
-func (h *HandlerV1) CreateFilm(c *gin.Context) {
+func (h *HandlerV1) Create(c *gin.Context) {
 
 	var (
-		film models.Film
+		user models.User
 	)
 
-	err := c.ShouldBindJSON(&film)
+	err := c.ShouldBindJSON(&user)
 	if err != nil {
 		log.Printf("error whiling create: %v\n", err)
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
-	id, err := storage.CreateFilm(h.db, film)
+	id, err := storage.Create(h.db, user)
 	if err != nil {
 		log.Printf("error whiling create: %v\n", err)
 		c.JSON(http.StatusInternalServerError, errors.New("error whiling create").Error())
 		return
 	}
 
-	filmId, err := storage.GetFilmById(h.db, id)
+	userId, err := storage.GetById(h.db, id)
 	if err != nil {
 		log.Printf("error whiling get by id: %v\n", err)
 		c.JSON(http.StatusInternalServerError, errors.New("error whiling get by id").Error())
 		return
 	}
 
-	c.JSON(http.StatusCreated, filmId)
+	c.JSON(http.StatusCreated, userId)
 }
 
-// GetByIdFilm godoc
-// @ID get_by_id_film
-// @Router /film/{id} [GET]
-// @Summary Get By Id Film
-// @Description Get By Id Film
-// @Tags Film
+// GetByIdUser godoc
+// @ID get_by_id_user
+// @Router /user/{id} [GET]
+// @Summary Get By Id User
+// @Description Get By Id User
+// @Tags User
 // @Accept json
 // @Produce json
 // @Param id path string true "id"
-// @Success 200 {object} models.Film "GetFilmBody"
+// @Success 200 {object} models.User "GetUserBody"
 // @Response 400 {object} string "Invalid Argument"
 // @Failure 500 {object} string "Server Error"
-func (h *HandlerV1) GetFilmById(c *gin.Context) {
+func (h *HandlerV1) GetById(c *gin.Context) {
 
 	id := c.Param("id")
-	newId, err := strconv.Atoi(id)
-	if err != nil {
-		fmt.Println("Error during conversion")
-		return
-	}
 
-	film, err := storage.GetFilmById(h.db, int(newId))
+	user, err := storage.GetById(h.db, id)
 	if err != nil {
 		log.Printf("error whiling get by id: %v\n", err)
 		c.JSON(http.StatusInternalServerError, errors.New("error whiling get by id").Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, film)
+	c.JSON(http.StatusOK, user)
 }
 
-// GetListFilm godoc
-// @ID get_list_film
-// @Router /film [GET]
-// @Summary Get List Film
-// @Description Get List Film
-// @Tags Film
+// GetListUser godoc
+// @ID get_list_user
+// @Router /user [GET]
+// @Summary Get List User
+// @Description Get List User
+// @Tags User
 // @Accept json
 // @Produce json
-// @Success 200 {object} []models.Film "GetFilmBody"
+// @Param user body models.User true "CreateUserRequestBody"
+// @Success 201 {object} models.User "GetUserBody"
 // @Response 400 {object} string "Invalid Argument"
 // @Failure 500 {object} string "Server Error"
-func (h *HandlerV1) GetFilmList(c *gin.Context) {
+func (h *HandlerV1) GetList(c *gin.Context) {
 
-	films, err := storage.GetFilmList(h.db)
+	users, err := storage.GetList(h.db)
 	if err != nil {
 		log.Printf("error whiling get list: %v", err)
 		c.JSON(http.StatusInternalServerError, errors.New("error whiling get list").Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, films)
+	c.JSON(http.StatusOK, users)
 }
 
-// UpdateFilm godoc
-// @ID update_film
-// @Router /film/ [PUT]
-// @Summary Update Film
-// @Description Update Film
-// @Tags Film
-// @Accept json
-// @Produce json
-// @Param film body models.Film true "CreateFilmRequestBody"
-// @Success 200 {object} models.Film "GetFilmsBody"
-// @Response 400 {object} string "Invalid Argument"
-// @Failure 500 {object} string "Server Error"
-func (h *HandlerV1) UpdateFilm(c *gin.Context) {
+func (h *HandlerV1) Update(c *gin.Context) {
 
 	var (
-		film models.Film
+		user models.User
 	)
 
-	err := c.ShouldBindJSON(&film)
+	err := c.ShouldBindJSON(&user)
 	if err != nil {
 		log.Printf("error whiling update: %v\n", err)
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
-	rowsAffected, err := storage.UpdateFilm(h.db, film)
+	rowsAffected, err := storage.Update(h.db, user)
 	if err != nil {
 		log.Printf("error whiling update: %v", err)
 		c.JSON(http.StatusInternalServerError, errors.New("error whiling update").Error())
@@ -148,7 +132,7 @@ func (h *HandlerV1) UpdateFilm(c *gin.Context) {
 		return
 	}
 
-	resp, err := storage.GetFilmById(h.db, film.FilmId)
+	resp, err := storage.GetById(h.db, user.Id)
 	if err != nil {
 		log.Printf("error whiling get by id: %v\n", err)
 		c.JSON(http.StatusInternalServerError, errors.New("error whiling get by id").Error())
@@ -158,28 +142,47 @@ func (h *HandlerV1) UpdateFilm(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// DeleteByIdFilm godoc
-// @ID delete_by_id_film
-// @Router /film/{id} [DELETE]
-// @Summary Delete By Id Film
-// @Description Delete By Id Film
-// @Tags Film
-// @Accept json
-// @Produce json
-// @Param id path string true "id"
-// @Success 200 {object} models.Film "GetFilmBody"
-// @Response 400 {object} string "Invalid Argument"
-// @Failure 500 {object} string "Server Error"
-func (h *HandlerV1) DeleteFilm(c *gin.Context) {
+func (h *HandlerV1) Patch(c *gin.Context) {
 
-	id := c.Param("id")
-	newId, err := strconv.Atoi(id)
+	var (
+		user models.UserData
+	)
+
+	err := c.ShouldBindJSON(&user)
 	if err != nil {
-		fmt.Println("Error during conversion")
+		log.Printf("error whiling patch: %v\n", err)
+		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
-	err = storage.DeleteFilm(h.db, newId)
+	rowsAffected, err := storage.Patch(h.db, user)
+	if err != nil {
+		log.Printf("error whiling patch: %v", err)
+		c.JSON(http.StatusInternalServerError, errors.New("error whiling patch").Error())
+		return
+	}
+
+	if rowsAffected == 0 {
+		log.Printf("error whiling update rows affected: %v", err)
+		c.JSON(http.StatusInternalServerError, errors.New("error whiling patch rows affected").Error())
+		return
+	}
+
+	resp, err := storage.GetById(h.db, user.Id)
+	if err != nil {
+		log.Printf("error whiling get by id: %v\n", err)
+		c.JSON(http.StatusInternalServerError, errors.New("error whiling get by id").Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+func (h *HandlerV1) Delete(c *gin.Context) {
+
+	id := c.Param("id")
+
+	err := storage.Delete(h.db, id)
 	if err != nil {
 		log.Printf("error whiling delete: %v", err)
 		c.JSON(http.StatusInternalServerError, errors.New("error whiling delete").Error())
