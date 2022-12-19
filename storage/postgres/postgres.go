@@ -6,14 +6,15 @@ import (
 
 	"github.com/jackc/pgx/v4/pgxpool"
 
-	"github.com/mokh1rbek/CRUD/config"
-	"github.com/mokh1rbek/CRUD/storage"
+	"github.com/mokh1rbek/film_CRUD/config"
+	"github.com/mokh1rbek/film_CRUD/storage"
 )
 
 type Store struct {
 	db       *pgxpool.Pool
-	film     *filmRepo
-	category *categoryRepo
+	film     *FilmRepo
+	actor    *ActorRepo
+	category *CategoryRepo
 }
 
 func NewPostgres(ctx context.Context, cfg config.Config) (storage.StorageI, error) {
@@ -39,6 +40,7 @@ func NewPostgres(ctx context.Context, cfg config.Config) (storage.StorageI, erro
 	return &Store{
 		db:       pool,
 		film:     NewFilmRepo(pool),
+		actor:    NewActorRepo(pool),
 		category: NewCategoryRepo(pool),
 	}, err
 }
@@ -54,6 +56,15 @@ func (s *Store) Film() storage.FilmRepoI {
 	}
 
 	return s.film
+}
+
+func (s *Store) Actor() storage.ActorRepoI {
+
+	if s.actor == nil {
+		s.actor = NewActorRepo(s.db)
+	}
+
+	return s.actor
 }
 
 func (s *Store) Category() storage.CategoryRepoI {

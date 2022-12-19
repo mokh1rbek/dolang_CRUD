@@ -8,21 +8,21 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4/pgxpool"
 
-	"github.com/mokh1rbek/CRUD/models"
-	"github.com/mokh1rbek/CRUD/pkg/helper"
+	"github.com/mokh1rbek/film_CRUD/models"
+	"github.com/mokh1rbek/film_CRUD/pkg/helper"
 )
 
-type categoryRepo struct {
+type CategoryRepo struct {
 	db *pgxpool.Pool
 }
 
-func NewCategoryRepo(db *pgxpool.Pool) *categoryRepo {
-	return &categoryRepo{
+func NewCategoryRepo(db *pgxpool.Pool) *CategoryRepo {
+	return &CategoryRepo{
 		db: db,
 	}
 }
 
-func (f *categoryRepo) Create(ctx context.Context, category *models.CreateCategory) (string, error) {
+func (f *CategoryRepo) Create(ctx context.Context, category *models.CreateCategory) (string, error) {
 
 	var (
 		id    = uuid.New().String()
@@ -49,7 +49,7 @@ func (f *categoryRepo) Create(ctx context.Context, category *models.CreateCatego
 	return id, nil
 }
 
-func (f *categoryRepo) GetByPKey(ctx context.Context, pkey *models.CategoryPrimarKey) (*models.Category, error) {
+func (f *CategoryRepo) GetByPKey(ctx context.Context, pkey *models.CategoryPrimarKey) (*models.Category, error) {
 
 	var (
 		id        sql.NullString
@@ -89,7 +89,7 @@ func (f *categoryRepo) GetByPKey(ctx context.Context, pkey *models.CategoryPrima
 	}, nil
 }
 
-func (f *categoryRepo) GetList(ctx context.Context, req *models.GetListCategoryRequest) (*models.GetListCategoryResponse, error) {
+func (f *CategoryRepo) GetList(ctx context.Context, req *models.GetListCategoryRequest) (*models.GetListCategoryResponse, error) {
 
 	var (
 		resp   = models.GetListCategoryResponse{}
@@ -141,7 +141,7 @@ func (f *categoryRepo) GetList(ctx context.Context, req *models.GetListCategoryR
 			return nil, err
 		}
 
-		resp.Categories = append(resp.Categories, &models.Category{
+		resp.Categorys = append(resp.Categorys, &models.Category{
 			Id:        id.String,
 			Name:      name.String,
 			CreatedAt: createdAt.String,
@@ -153,7 +153,7 @@ func (f *categoryRepo) GetList(ctx context.Context, req *models.GetListCategoryR
 	return &resp, err
 }
 
-func (f *categoryRepo) Update(ctx context.Context, id string, req *models.UpdateCategory) (int64, error) {
+func (f *CategoryRepo) Update(ctx context.Context, id string, req *models.UpdateCategory) (int64, error) {
 
 	var (
 		query  = ""
@@ -184,7 +184,7 @@ func (f *categoryRepo) Update(ctx context.Context, id string, req *models.Update
 	return rowsAffected.RowsAffected(), nil
 }
 
-func (f *categoryRepo) Delete(ctx context.Context, req *models.CategoryPrimarKey) error {
+func (f *CategoryRepo) Delete(ctx context.Context, req *models.CategoryPrimarKey) error {
 
 	_, err := f.db.Exec(ctx, "DELETE FROM category WHERE category_id = $1", req.Id)
 	if err != nil {

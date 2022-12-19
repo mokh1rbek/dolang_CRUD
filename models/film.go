@@ -21,6 +21,7 @@ type Film struct {
 }
 
 type UpdateFilm struct {
+	Id          string `json:"film_id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	ReleaseYear string `json:"release_year"`

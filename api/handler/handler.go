@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/mokh1rbek/CRUD/storage"
+	"github.com/mokh1rbek/film_CRUD/storage"
 )
 
 type HandlerV1 struct {

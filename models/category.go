@@ -15,6 +15,7 @@ type Category struct {
 }
 
 type UpdateCategory struct {
+	Id   string `json: "category_id"`
 	Name string `json:"name"`
 }
 
@@ -25,5 +26,5 @@ type GetListCategoryRequest struct {
 
 type GetListCategoryResponse struct {
 	Count     int32       `json:"count"`
-	Categories []*Category `json:"categories"`
+	Categorys []*Category `json:"categorys"`
 }

@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/mokh1rbek/CRUD/models"
+	"github.com/mokh1rbek/film_CRUD/models"
 
 	"github.com/gin-gonic/gin"
 )

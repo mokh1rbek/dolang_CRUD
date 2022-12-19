@@ -12,38 +12,38 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// CreateFilm godoc
-// @ID create_film
-// @Router /film [POST]
-// @Summary Create Film
-// @Description Create Film
-// @Tags Film
+// CreateActor godoc
+// @ID create_actor
+// @Router /actor [POST]
+// @Summary Create Actor
+// @Description Create Actor
+// @Tags Actor
 // @Accept json
 // @Produce json
-// @Param film body models.CreateFilm true "CreateFilmRequestBody"
-// @Success 201 {object} models.Film "GetFilmBody"
+// @Param actor body models.CreateActor true "CreateActorRequestBody"
+// @Success 201 {object} models.Actor "GetactorBody"
 // @Response 400 {object} string "Invalid Argument"
 // @Failure 500 {object} string "Server Error"
-func (h *HandlerV1) CreateFilm(c *gin.Context) {
-	var film models.CreateFilm
+func (h *HandlerV1) CreateActor(c *gin.Context) {
+	var actor models.CreateActor
 
-	err := c.ShouldBindJSON(&film)
+	err := c.ShouldBindJSON(&actor)
 	if err != nil {
 		log.Printf("error whiling create: %v\n", err)
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
-	id, err := h.storage.Film().Create(context.Background(), &film)
+	id, err := h.storage.Actor().Create(context.Background(), &actor)
 	if err != nil {
 		log.Printf("error whiling Create: %v\n", err)
 		c.JSON(http.StatusInternalServerError, errors.New("error whiling Create").Error())
 		return
 	}
 
-	resp, err := h.storage.Film().GetByPKey(
+	resp, err := h.storage.Actor().GetByPKey(
 		context.Background(),
-		&models.FilmPrimarKey{Id: id},
+		&models.ActorPrimarKey{Id: id},
 	)
 
 	if err != nil {
@@ -55,25 +55,25 @@ func (h *HandlerV1) CreateFilm(c *gin.Context) {
 	c.JSON(http.StatusCreated, resp)
 }
 
-// GetByIdFilm godoc
-// @ID get_by_id_film
-// @Router /film/{id} [GET]
-// @Summary Get By Id Film
-// @Description Get By Id Film
-// @Tags Film
+// GetByIdActor godoc
+// @ID get_by_id_actor
+// @Router /actor/{id} [GET]
+// @Summary Get By Id Actor
+// @Description Get By Id Actor
+// @Tags Actor
 // @Accept json
 // @Produce json
 // @Param id path string true "id"
-// @Success 200 {object} models.Film "GetFilmBody"
+// @Success 200 {object} models.Actor "GetActorBody"
 // @Response 400 {object} string "Invalid Argument"
 // @Failure 500 {object} string "Server Error"
-func (h *HandlerV1) GetFilmById(c *gin.Context) {
+func (h *HandlerV1) GetActorById(c *gin.Context) {
 
 	id := c.Param("id")
 
-	resp, err := h.storage.Film().GetByPKey(
+	resp, err := h.storage.Actor().GetByPKey(
 		context.Background(),
-		&models.FilmPrimarKey{Id: id},
+		&models.ActorPrimarKey{Id: id},
 	)
 
 	if err != nil {
@@ -85,20 +85,20 @@ func (h *HandlerV1) GetFilmById(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// GetListFilm godoc
-// @ID get_list_film
-// @Router /film [GET]
-// @Summary Get List Film
-// @Description Get List Film
-// @Tags Film
+// GetListActor godoc
+// @ID get_list_actor
+// @Router /actor [GET]
+// @Summary Get List Actor
+// @Description Get List Actor
+// @Tags Actor
 // @Accept json
 // @Produce json
 // @Param offset query string false "offset"
 // @Param limit query string false "limit"
-// @Success 200 {object} models.GetListFilmResponse "GetFilmBody"
+// @Success 200 {object} models.GetListActorResponse "GetActorBody"
 // @Response 400 {object} string "Invalid Argument"
 // @Failure 500 {object} string "Server Error"
-func (h *HandlerV1) GetFilmList(c *gin.Context) {
+func (h *HandlerV1) GetActorList(c *gin.Context) {
 	var (
 		limit  int
 		offset int
@@ -125,9 +125,9 @@ func (h *HandlerV1) GetFilmList(c *gin.Context) {
 		}
 	}
 
-	resp, err := h.storage.Film().GetList(
+	resp, err := h.storage.Actor().GetList(
 		context.Background(),
-		&models.GetListFilmRequest{
+		&models.GetListActorRequest{
 			Limit:  int32(limit),
 			Offset: int32(offset),
 		},
@@ -142,45 +142,44 @@ func (h *HandlerV1) GetFilmList(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// UpdateFilm godoc
-// @ID update_film
-// @Router /film/{id} [PUT]
-// @Summary Update Film
-// @Description Update Film
-// @Tags Film
+// UpdateActor godoc
+// @ID update_actor
+// @Router /actor/{id} [PUT]
+// @Summary Update Actor
+// @Description Update Actor
+// @Tags Actor
 // @Accept json
 // @Produce json
 // @Param id path string true "id"
-// @Param film body models.UpdateFilm true "CreateFilmRequestBody"
-// @Success 200 {object} models.Film "GetFilmsBody"
+// @Param actor body models.UpdateActor true "CreateActorRequestBody"
+// @Success 200 {object} models.Actor "GetactorsBody"
 // @Response 400 {object} string "Invalid Argument"
 // @Failure 500 {object} string "Server Error"
-func (h *HandlerV1) UpdateFilm(c *gin.Context) {
+func (h *HandlerV1) UpdateActor(c *gin.Context) {
 
 	var (
-		film models.UpdateFilm
+		actor models.UpdateActor
 	)
 
 	id := c.Param("id")
 
 	if id == "" {
-		log.Printf("error whiling update: %v\n", errors.New("required film id").Error())
-		c.JSON(http.StatusBadRequest, errors.New("required film id").Error())
+		log.Printf("error whiling update: %v\n", errors.New("required actor id").Error())
+		c.JSON(http.StatusBadRequest, errors.New("required actor id").Error())
 		return
 	}
 
-	err := c.ShouldBindJSON(&film)
+	err := c.ShouldBindJSON(&actor)
 	if err != nil {
 		log.Printf("error whiling update: %v\n", err)
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
-	film.Id = id
-
-	rowsAffected, err := h.storage.Film().Update(
+	rowsAffected, err := h.storage.Actor().Update(
 		context.Background(),
-		&film,
+		id,
+		&actor,
 	)
 
 	if err != nil {
@@ -195,9 +194,9 @@ func (h *HandlerV1) UpdateFilm(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.storage.Film().GetByPKey(
+	resp, err := h.storage.Actor().GetByPKey(
 		context.Background(),
-		&models.FilmPrimarKey{Id: id},
+		&models.ActorPrimarKey{Id: id},
 	)
 
 	if err != nil {
@@ -209,30 +208,30 @@ func (h *HandlerV1) UpdateFilm(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// DeleteByIdFilm godoc
-// @ID delete_by_id_film
-// @Router /film/{id} [DELETE]
-// @Summary Delete By Id Film
-// @Description Delete By Id Film
-// @Tags Film
+// DeleteByIdActor godoc
+// @ID delete_by_id_actor
+// @Router /actor/{id} [DELETE]
+// @Summary Delete By Id Actor
+// @Description Delete By Id Actor
+// @Tags Actor
 // @Accept json
 // @Produce json
 // @Param id path string true "id"
-// @Success 200 {object} models.Film "GetFilmBody"
+// @Success 200 {object} models.Actor "GetActorBody"
 // @Response 400 {object} string "Invalid Argument"
 // @Failure 500 {object} string "Server Error"
-func (h *HandlerV1) DeleteFilm(c *gin.Context) {
+func (h *HandlerV1) DeleteActor(c *gin.Context) {
 
 	id := c.Param("id")
 	if id == "" {
-		log.Printf("error whiling update: %v\n", errors.New("required film id").Error())
-		c.JSON(http.StatusBadRequest, errors.New("required film id").Error())
+		log.Printf("error whiling update: %v\n", errors.New("required actor id").Error())
+		c.JSON(http.StatusBadRequest, errors.New("required actor id").Error())
 		return
 	}
 
-	err := h.storage.Film().Delete(
+	err := h.storage.Actor().Delete(
 		context.Background(),
-		&models.FilmPrimarKey{
+		&models.ActorPrimarKey{
 			Id: id,
 		},
 	)

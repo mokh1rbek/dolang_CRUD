@@ -892,6 +892,9 @@ const docTemplate = `{
                 "duration": {
                     "type": "integer"
                 },
+                "film_id": {
+                    "type": "string"
+                },
                 "release_year": {
                     "type": "string"
                 },

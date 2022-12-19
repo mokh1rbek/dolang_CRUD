@@ -1,9 +1,9 @@
 package api
 
 import (
-	_ "github.com/mokh1rbek/CRUD/api/docs"
-	"github.com/mokh1rbek/CRUD/api/handler"
-	"github.com/mokh1rbek/CRUD/storage"
+	_ "github.com/mokh1rbek/film_CRUD/api/docs"
+	"github.com/mokh1rbek/film_CRUD/api/handler"
+	"github.com/mokh1rbek/film_CRUD/storage"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -19,6 +19,12 @@ func SetUpApi(r *gin.Engine, storage storage.StorageI) {
 	r.GET("/film", handlerV1.GetFilmList)
 	r.PUT("/film/:id", handlerV1.UpdateFilm)
 	r.DELETE("/film/:id", handlerV1.DeleteFilm)
+
+	r.POST("/actor", handlerV1.CreateActor)
+	r.GET("/actor/:id", handlerV1.GetActorById)
+	r.GET("/actor", handlerV1.GetActorList)
+	r.PUT("/actor/:id", handlerV1.UpdateActor)
+	r.DELETE("/actor/:id", handlerV1.DeleteActor)
 
 	r.POST("/category", handlerV1.CreateCategory)
 	r.GET("/category/:id", handlerV1.GetCategoryById)

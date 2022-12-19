@@ -8,21 +8,21 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4/pgxpool"
 
-	"github.com/mokh1rbek/CRUD/models"
-	"github.com/mokh1rbek/CRUD/pkg/helper"
+	"github.com/mokh1rbek/film_CRUD/models"
+	"github.com/mokh1rbek/film_CRUD/pkg/helper"
 )
 
-type filmRepo struct {
+type FilmRepo struct {
 	db *pgxpool.Pool
 }
 
-func NewFilmRepo(db *pgxpool.Pool) *filmRepo {
-	return &filmRepo{
+func NewFilmRepo(db *pgxpool.Pool) *FilmRepo {
+	return &FilmRepo{
 		db: db,
 	}
 }
 
-func (f *filmRepo) Create(ctx context.Context, film *models.CreateFilm) (string, error) {
+func (f *FilmRepo) Create(ctx context.Context, film *models.CreateFilm) (string, error) {
 
 	var (
 		id    = uuid.New().String()
@@ -55,7 +55,7 @@ func (f *filmRepo) Create(ctx context.Context, film *models.CreateFilm) (string,
 	return id, nil
 }
 
-func (f *filmRepo) GetByPKey(ctx context.Context, pkey *models.FilmPrimarKey) (*models.Film, error) {
+func (f *FilmRepo) GetByPKey(ctx context.Context, pkey *models.FilmPrimarKey) (*models.Film, error) {
 
 	var (
 		id          sql.NullString
@@ -107,7 +107,7 @@ func (f *filmRepo) GetByPKey(ctx context.Context, pkey *models.FilmPrimarKey) (*
 	}, nil
 }
 
-func (f *filmRepo) GetList(ctx context.Context, req *models.GetListFilmRequest) (*models.GetListFilmResponse, error) {
+func (f *FilmRepo) GetList(ctx context.Context, req *models.GetListFilmRequest) (*models.GetListFilmResponse, error) {
 
 	var (
 		resp   = models.GetListFilmResponse{}
@@ -183,7 +183,7 @@ func (f *filmRepo) GetList(ctx context.Context, req *models.GetListFilmRequest) 
 	return &resp, err
 }
 
-func (f *filmRepo) Update(ctx context.Context, id string, req *models.UpdateFilm) (int64, error) {
+func (f *FilmRepo) Update(ctx context.Context, req *models.UpdateFilm) (int64, error) {
 
 	var (
 		query  = ""
@@ -203,7 +203,7 @@ func (f *filmRepo) Update(ctx context.Context, id string, req *models.UpdateFilm
 	`
 
 	params = map[string]interface{}{
-		"actor_id":     id,
+		"film_id":      req.Id,
 		"title":        req.Title,
 		"description":  req.Description,
 		"release_year": req.ReleaseYear,
@@ -220,7 +220,7 @@ func (f *filmRepo) Update(ctx context.Context, id string, req *models.UpdateFilm
 	return rowsAffected.RowsAffected(), nil
 }
 
-func (f *filmRepo) Delete(ctx context.Context, req *models.FilmPrimarKey) error {
+func (f *FilmRepo) Delete(ctx context.Context, req *models.FilmPrimarKey) error {
 
 	_, err := f.db.Exec(ctx, "DELETE FROM film WHERE film_id = $1", req.Id)
 	if err != nil {
