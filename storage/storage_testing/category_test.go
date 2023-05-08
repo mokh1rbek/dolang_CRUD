@@ -155,8 +155,8 @@ func TestCategoryUpdate(t *testing.T) {
 				},
 			)
 
-			comparer := cmp.Comparer(func(x, y models.Film) bool {
-				return x.Title == y.Title
+			comparer := cmp.Comparer(func(x, y models.Category) bool {
+				return x.Name == y.Name
 			})
 
 			if diff := cmp.Diff(tc.Output, res, comparer); diff != "" {

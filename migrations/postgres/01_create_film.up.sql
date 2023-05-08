@@ -1,25 +1,17 @@
 
-CREATE TABLE film (
-    film_id UUID NOT NULL,
-    title VARCHAR NOT NULL,
-    description VARCHAR,
-    release_year DATE NOT NULL,
-    duration INTEGER NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL
-);
-
-CREATE TABLE actor (
-    actor_id UUID NOT NULL,
-    first_name character varying(45) NOT NULL,
-    last_name character varying(45) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP NOT NULL
-);
-
 CREATE TABLE category (
-    category_id UUID NOT NULL,
-    name character varying(25) NOT NULL,
+    category_id UUID PRIMARY KEY NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    parent_uuid UUID,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL
+);
+
+CREATE TABLE product (
+    product_id UUID PRIMARY KEY NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    price NUMERIC NOT NULL DEFAULT 0,
+    category_id UUID NOT NULL REFERENCES category(category_id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL
 );

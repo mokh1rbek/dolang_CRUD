@@ -183,7 +183,7 @@ func (h *HandlerV1) UpdateCategory(c *gin.Context) {
 	)
 
 	if err != nil {
-		log.Printf("error whiling update: %v", err)
+		log.Printf("error whiling Update: %v", err)
 		c.JSON(http.StatusInternalServerError, errors.New("error whiling update").Error())
 		return
 	}

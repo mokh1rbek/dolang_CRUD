@@ -12,9 +12,8 @@ import (
 
 type Store struct {
 	db       *pgxpool.Pool
-	film     *FilmRepo
-	actor    *ActorRepo
 	category *CategoryRepo
+	country  *CountryRepo
 }
 
 func NewPostgres(ctx context.Context, cfg config.Config) (storage.StorageI, error) {
@@ -39,32 +38,13 @@ func NewPostgres(ctx context.Context, cfg config.Config) (storage.StorageI, erro
 
 	return &Store{
 		db:       pool,
-		film:     NewFilmRepo(pool),
-		actor:    NewActorRepo(pool),
 		category: NewCategoryRepo(pool),
+		country:  NewCountryRepo(pool),
 	}, err
 }
 
 func (s *Store) CloseDB() {
 	s.db.Close()
-}
-
-func (s *Store) Film() storage.FilmRepoI {
-
-	if s.film == nil {
-		s.film = NewFilmRepo(s.db)
-	}
-
-	return s.film
-}
-
-func (s *Store) Actor() storage.ActorRepoI {
-
-	if s.actor == nil {
-		s.actor = NewActorRepo(s.db)
-	}
-
-	return s.actor
 }
 
 func (s *Store) Category() storage.CategoryRepoI {
@@ -74,4 +54,13 @@ func (s *Store) Category() storage.CategoryRepoI {
 	}
 
 	return s.category
+}
+
+func (s *Store) Country() storage.CountryRepoI {
+
+	if s.country == nil {
+		s.country = NewCountryRepo(s.db)
+	}
+
+	return s.country
 }

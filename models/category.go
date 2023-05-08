@@ -1,22 +1,26 @@
 package models
 
 type CategoryPrimarKey struct {
-	Id string `json:"category_id"`
+	Id         string `json:"category_id"`
+	ParentUUID string `json:"parent_uuid"`
 }
 
 type CreateCategory struct {
-	Name string `json:"name"`
+	Name       string `json:"name"`
+	ParentUUID string `json:"parent_uuid"`
 }
 type Category struct {
-	Id        string `json:"category_id"`
-	Name      string `json:"name"`
-	CreatedAt string `json:"created_at"`
-	UpdatedAt string `json:"updated_at"`
+	Id         string `json:"category_id"`
+	Name       string `json:"name"`
+	ParentUUID string `json:"parent_uuid"`
+	CreatedAt  string `json:"created_at"`
+	UpdatedAt  string `json:"updated_at"`
 }
 
 type UpdateCategory struct {
-	Id   string `json: "category_id"`
-	Name string `json:"name"`
+	Id         string `json:"category_id"`
+	Name       string `json:"name"`
+	ParentUUID string `json:"parent_uuid"`
 }
 
 type GetListCategoryRequest struct {

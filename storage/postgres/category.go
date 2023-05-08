@@ -25,25 +25,41 @@ func NewCategoryRepo(db *pgxpool.Pool) *CategoryRepo {
 func (f *CategoryRepo) Create(ctx context.Context, category *models.CreateCategory) (string, error) {
 
 	var (
-		id    = uuid.New().String()
-		query string
+		id       = uuid.New().String()
+		query    string
+		nulluuid sql.NullString
 	)
 
 	query = `
 		INSERT INTO category(
 			category_id,
 			name,
+			parent_uuid,
 			updated_at
-		) VALUES ( $1, $2, now() )
+		) VALUES ( $1, $2, $3, now())
 	`
 
-	_, err := f.db.Exec(ctx, query,
-		id,
-		category.Name,
-	)
+	if category.ParentUUID == "" {
+		_, err := f.db.Exec(ctx, query,
+			id,
+			category.Name,
+			nulluuid,
+		)
 
-	if err != nil {
-		return "", err
+		if err != nil {
+			return "", err
+		}
+	} else {
+
+		_, err := f.db.Exec(ctx, query,
+			id,
+			category.Name,
+			category.ParentUUID,
+		)
+
+		if err != nil {
+			return "", err
+		}
 	}
 
 	return id, nil
@@ -52,16 +68,18 @@ func (f *CategoryRepo) Create(ctx context.Context, category *models.CreateCatego
 func (f *CategoryRepo) GetByPKey(ctx context.Context, pkey *models.CategoryPrimarKey) (*models.Category, error) {
 
 	var (
-		id        sql.NullString
-		name      sql.NullString
-		createdAt sql.NullString
-		updatedAt sql.NullString
+		id          sql.NullString
+		name        sql.NullString
+		parent_uuid sql.NullString
+		createdAt   sql.NullString
+		updatedAt   sql.NullString
 	)
 
 	query := `
 		SELECT
 			category_id,
 			name,
+			parent_uuid,
 			created_at,
 			updated_at
 		FROM
@@ -73,6 +91,7 @@ func (f *CategoryRepo) GetByPKey(ctx context.Context, pkey *models.CategoryPrima
 		Scan(
 			&id,
 			&name,
+			&parent_uuid,
 			&createdAt,
 			&updatedAt,
 		)
@@ -82,10 +101,11 @@ func (f *CategoryRepo) GetByPKey(ctx context.Context, pkey *models.CategoryPrima
 	}
 
 	return &models.Category{
-		Id:        id.String,
-		Name:      name.String,
-		CreatedAt: createdAt.String,
-		UpdatedAt: updatedAt.String,
+		Id:         id.String,
+		Name:       name.String,
+		ParentUUID: parent_uuid.String,
+		CreatedAt:  createdAt.String,
+		UpdatedAt:  updatedAt.String,
 	}, nil
 }
 
@@ -110,6 +130,7 @@ func (f *CategoryRepo) GetList(ctx context.Context, req *models.GetListCategoryR
 			COUNT(*) OVER(),
 			category_id,
 			name,
+			parent_uuid,
 			created_at,
 			updated_at
 		FROM
@@ -123,16 +144,18 @@ func (f *CategoryRepo) GetList(ctx context.Context, req *models.GetListCategoryR
 	for rows.Next() {
 
 		var (
-			id        sql.NullString
-			name      sql.NullString
-			createdAt sql.NullString
-			updatedAt sql.NullString
+			id          sql.NullString
+			name        sql.NullString
+			parent_uuid sql.NullString
+			createdAt   sql.NullString
+			updatedAt   sql.NullString
 		)
 
 		err := rows.Scan(
 			&resp.Count,
 			&id,
 			&name,
+			&parent_uuid,
 			&createdAt,
 			&updatedAt,
 		)
@@ -142,10 +165,11 @@ func (f *CategoryRepo) GetList(ctx context.Context, req *models.GetListCategoryR
 		}
 
 		resp.Categorys = append(resp.Categorys, &models.Category{
-			Id:        id.String,
-			Name:      name.String,
-			CreatedAt: createdAt.String,
-			UpdatedAt: updatedAt.String,
+			Id:         id.String,
+			Name:       name.String,
+			ParentUUID: parent_uuid.String,
+			CreatedAt:  createdAt.String,
+			UpdatedAt:  updatedAt.String,
 		})
 
 	}
@@ -165,13 +189,14 @@ func (f *CategoryRepo) Update(ctx context.Context, id string, req *models.Update
 			category
 		SET
 			name = :name,
+			parent_uuid = :parent_uuid
 			updated_at = now()
 		WHERE category_id = :category_id
 	`
 
 	params = map[string]interface{}{
-		"actor_id": id,
-		"name":     req.Name,
+		"name":        req.Name,
+		"parent_uuid": req.ParentUUID,
 	}
 
 	query, args := helper.ReplaceQueryParams(query, params)

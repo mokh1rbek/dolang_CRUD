@@ -13,9 +13,7 @@ import (
 )
 
 var (
-	filmRepo     *postgres.FilmRepo
 	categoryRepo *postgres.CategoryRepo
-	actorRepo    *postgres.ActorRepo
 )
 
 func TestMain(m *testing.M) {
@@ -41,7 +39,7 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 
-	filmRepo = postgres.NewFilmRepo(pool)
+	categoryRepo = postgres.NewCategoryRepo(pool)
 
 	os.Exit(m.Run())
 }
